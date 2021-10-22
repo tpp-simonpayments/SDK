@@ -1,0 +1,725 @@
+openapi: 3.0.0
+info:
+  title: Triple Play Pay API
+  description: Payment API
+  contact:
+    email: support@tripleplaypay.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/TriplePlayPay/payment/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://www.tripleplaypay.com/api
+  description: Triple Play Pay
+tags:
+- name: api
+  description: Secured Admin-only calls
+- name: sandbox
+  description: Operations available to regular developers
+paths:
+  /charge:
+    post:
+      tags:
+      - api
+      summary: Charge a credit card or settle a previous charge.
+      description: Charge a credit card or settle a previous charge.
+      operationId: charge
+      parameters:
+      - name: amount
+        in: query
+        description: The total transaction amount. This is the amount of funds to
+          move on the card
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: transactionId
+        in: query
+        description: Transaction ID used to settle an authorized card (cc info then
+          not required)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: cc
+        in: query
+        description: Credit Card Number with or without dashes
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mm
+        in: query
+        description: 2 digit month
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: yy
+        in: query
+        description: 2 digit year
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: cvv
+        in: query
+        description: "Card Verification Value found on the card (CVV2, CVC2, CID)"
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ticket
+        in: query
+        description: Ticket Number used by POS
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: meta
+        in: query
+        description: Optional user defined object to be returned with future response
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/response'
+                x-content-type: application/json
+        "400":
+          description: error in parameters
+        "500":
+          description: error in api call
+  /authorize:
+    post:
+      tags:
+      - api
+      summary: Used to verify funds when the total amount of the purchase is unknown.
+      description: Used to verify funds when the total amount of the purchase is unknown.
+      operationId: authorize
+      parameters:
+      - name: amount
+        in: query
+        description: The total transaction amount. This is the amount of funds to
+          move on the card
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: cc
+        in: query
+        description: Credit Card Number with or without dashes
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mm
+        in: query
+        description: 2 digit Month
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: yy
+        in: query
+        description: 2 digit Year
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: cvv
+        in: query
+        description: "Card Verification Value found on the card (CVV2, CVC2, CID)"
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ticket
+        in: query
+        description: Ticket Number used by POS
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: meta
+        in: query
+        description: Optional user defined object to be returned with future response
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/response'
+                x-content-type: application/json
+        "400":
+          description: error in parameters
+        "500":
+          description: error in api call
+  /settle:
+    post:
+      tags:
+      - api
+      summary: "Alternative to sending a transactionId to charge, this method will\
+        \ settle an outstanding Authorization."
+      description: "Alternative to sending a transactionId to charge, this method\
+        \ will settle an outstanding Authorization."
+      operationId: settle
+      parameters:
+      - name: transactionId
+        in: query
+        description: Transaction ID of charged event.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ticket
+        in: query
+        description: Ticket Number used by POS
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: meta
+        in: query
+        description: Optional user defined object to be returned with future response
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/response'
+                x-content-type: application/json
+        "400":
+          description: error in parameters
+        "500":
+          description: error in api call
+  /credit:
+    post:
+      tags:
+      - api
+      summary: A Credit transaction is used to refund a cardholder for a previous
+        transaction.
+      description: A Credit transaction is used to refund a cardholder for a previous
+        transaction.
+      operationId: credit
+      parameters:
+      - name: amount
+        in: query
+        description: The total transaction amount. This is the amount of funds to
+          move on the card
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: cc
+        in: query
+        description: Credit Card Number with or without dashes
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mm
+        in: query
+        description: 2 digit month
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: yy
+        in: query
+        description: 2 digit year
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: cvv
+        in: query
+        description: "Card Verification Value found on the card (CVV2, CVC2, CID)"
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ticket
+        in: query
+        description: Ticket Number used by POS
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: meta
+        in: query
+        description: Optional user defined object to be returned with future response
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/response'
+                x-content-type: application/json
+        "400":
+          description: error in parameters
+        "500":
+          description: error in api call
+  /void:
+    post:
+      tags:
+      - api
+      summary: A Void transaction can be used to back out a previous Sale transaction.
+      description: A Void transaction can be used to back out a previous Sale transaction.
+      operationId: void
+      parameters:
+      - name: transactionId
+        in: query
+        description: Transaction ID of charged event.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ticket
+        in: query
+        description: Ticket Number used by POS
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: meta
+        in: query
+        description: Optional user defined object to be returned with future response
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/response'
+                x-content-type: application/json
+        "400":
+          description: error in parameters
+        "500":
+          description: error in api call
+  /tokenize:
+    post:
+      tags:
+      - api
+      summary: Create a token for later use.
+      description: Create a token for later use.
+      operationId: tokenize
+      parameters:
+      - name: cc
+        in: query
+        description: Credit Card Number with or without dashes
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mm
+        in: query
+        description: 2 digit Month
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: yy
+        in: query
+        description: 2 digit Year
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: cvv
+        in: query
+        description: "Card Verification Value found on the card (CVV2, CVC2, CID)"
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/response'
+                x-content-type: application/json
+        "400":
+          description: error in parameters
+        "500":
+          description: error in api call
+  /enroll:
+    post:
+      tags:
+      - api
+      summary: Enroll a new merchant or retrieve status of pending merchant.
+      description: Enroll a new merchant or retrieve status of pending merchant.
+      operationId: enroll
+      parameters:
+      - name: dba_name
+        in: query
+        description: Doing Business As name. <code>*</code> Only field necessary for
+          GET.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: email
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: website
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: fed_tx_id
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: legal_name
+        in: query
+        description: Legal Business Name
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: start_date
+        in: query
+        description: Business Start Date
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: account_holder_name
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: account_type
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: account_number
+        in: query
+        description: 'Bank Account to deposit transactions. '
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: routing_number
+        in: query
+        description: Bank Routing Number to deposit transactions.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: stock_symbol
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ownership_type
+        in: query
+        description: 'Select an ownership type:'
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+            default: Sole Proprietor
+            enum:
+            - Sole Proprietor
+            - C-Corp Private
+            - C-Corp Public
+            - S-Corp Private
+            - S-Corp Public
+            - LLC Private
+            - LLC Public
+            - Not For Profit
+            - Partnership Private
+            - Partnership
+            - Government Agency
+      - name: business_description
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: business_phone_number
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: business_address_1
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: business_address_2
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: business_city
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: business_state_province
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: business_postal_code
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_first_name
+        in: query
+        description: "Primary Owners First Name. Adding a number to the parameter\
+          \ allows for adding multiple principle owners. Example: <strong>2principle_first_name</strong>"
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_last_name
+        in: query
+        description: Primary Owners Last Name.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_ssn
+        in: query
+        description: Primary Owners Social Security Number
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_date_of_birth
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_address_line_1
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_address_line_2
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_city
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_state_province
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_postal_code
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_title
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_ownership_percentage
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: principle_phone_number
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/response'
+                x-content-type: application/json
+        "400":
+          description: error in parameters
+        "500":
+          description: error in api call
+components:
+  schemas:
+    response:
+      required:
+      - name
+      - photoUrls
+      type: object
+      properties:
+        status:
+          type: boolean
+        id:
+          type: string
+          example: 66a0d1c2-7ad8-41e0-ba8a-0ecf8df0ea15
+        message:
+          type: object
+          example:
+            ResponseMessage: Result of call
+        meta:
+          type: object
+          example:
+            Your Key: Your Value
+        method:
+          type: string
+          example: apicall
+      example:
+        method: apicall
+        meta:
+          Your Key: Your Value
+        id: 66a0d1c2-7ad8-41e0-ba8a-0ecf8df0ea15
+        message:
+          ResponseMessage: Result of call
+        status: true
+  requestBodies:
+    response:
+      description: Standard response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/response'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/response'
+      required: true
