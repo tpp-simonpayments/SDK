@@ -4,7 +4,7 @@ Triple Play Pay API
 
 Payment API
 
-OpenAPI spec version: 1.0.0
+OpenAPI spec version: 1.0.1-oas3
 Contact: support@tripleplaypay.com
 -->
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -12,7 +12,7 @@ Contact: support@tripleplaypay.com
     
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{86EF4960-0FED-40F5-BF56-43B140F68F89}</ProjectGuid>
+    <ProjectGuid>{0E6FF6B3-57FF-4826-9232-430E4C531F4F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IO.Swagger</RootNamespace>
