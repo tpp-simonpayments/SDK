@@ -1,8 +1,8 @@
 # swagger-java-client
 
 Triple Play Pay API
-- API version: 1.0.0
-  - Build date: 2021-10-22T16:49:48.919Z[GMT]
+- API version: 1.0.1-oas3
+  - Build date: 2022-03-04T19:46:40.620Z[GMT]
 
 Payment API
 
@@ -84,15 +84,41 @@ public class ApiApiExample {
     public static void main(String[] args) {
         
         ApiApi apiInstance = new ApiApi();
+        String activationCode = "activationCode_example"; // String | Activation Code on Terminal Screen
+        String terminalId = "terminalId_example"; // String | Custom Name of Terminal
+        Object meta = null; // Object | Optional user defined object to be returned with future response
+        try {
+            List<Response> result = apiInstance.activate(activationCode, terminalId, meta);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ApiApi#activate");
+            e.printStackTrace();
+        }
+    }
+}
+import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ApiApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ApiApiExample {
+
+    public static void main(String[] args) {
+        
+        ApiApi apiInstance = new ApiApi();
         String amount = "amount_example"; // String | The total transaction amount. This is the amount of funds to move on the card
         String cc = "cc_example"; // String | Credit Card Number with or without dashes
         String mm = "mm_example"; // String | 2 digit Month
         String yy = "yy_example"; // String | 2 digit Year
         String cvv = "cvv_example"; // String | Card Verification Value found on the card (CVV2, CVC2, CID)
+        String zipcode = "zipcode_example"; // String | Zip code. *optional synonym: zip
         String ticket = "ticket_example"; // String | Ticket Number used by POS
         Object meta = null; // Object | Optional user defined object to be returned with future response
         try {
-            List<Response> result = apiInstance.authorize(amount, cc, mm, yy, cvv, ticket, meta);
+            List<Response> result = apiInstance.authorize(amount, cc, mm, yy, cvv, zipcode, ticket, meta);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ApiApi#authorize");
@@ -113,11 +139,11 @@ public class ApiApiExample {
     public static void main(String[] args) {
         
         ApiApi apiInstance = new ApiApi();
-        String transactionId = "transactionId_example"; // String | Transaction ID of charged event.
+        String id = "id_example"; // String | Transaction ID of charged event. *optional synonym: transactionId
         String ticket = "ticket_example"; // String | Ticket Number used by POS
         Object meta = null; // Object | Optional user defined object to be returned with future response
         try {
-            List<Response> result = apiInstance.callVoid(transactionId, ticket, meta);
+            List<Response> result = apiInstance.callVoid(id, ticket, meta);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ApiApi#callVoid");
@@ -139,15 +165,19 @@ public class ApiApiExample {
         
         ApiApi apiInstance = new ApiApi();
         String amount = "amount_example"; // String | The total transaction amount. This is the amount of funds to move on the card
-        String transactionId = "transactionId_example"; // String | Transaction ID used to settle an authorized card (cc info then not required)
         String cc = "cc_example"; // String | Credit Card Number with or without dashes
         String mm = "mm_example"; // String | 2 digit month
         String yy = "yy_example"; // String | 2 digit year
         String cvv = "cvv_example"; // String | Card Verification Value found on the card (CVV2, CVC2, CID)
+        String accountNumber = "accountNumber_example"; // String | Bank Account Number
+        String routingNumber = "routingNumber_example"; // String | Bank Routing Number
+        String type = "type_example"; // String | Options: checking, savings *default checking
+        String id = "id_example"; // String | Transaction ID used to settle an authorized payment method (cc or bank info then not required) *optional synonym: transactionId
+        String zipcode = "zipcode_example"; // String | Zip code. *optional synonym: zip
         String ticket = "ticket_example"; // String | Ticket Number used by POS
         Object meta = null; // Object | Optional user defined object to be returned with future response
         try {
-            List<Response> result = apiInstance.charge(amount, transactionId, cc, mm, yy, cvv, ticket, meta);
+            List<Response> result = apiInstance.charge(amount, cc, mm, yy, cvv, accountNumber, routingNumber, type, id, zipcode, ticket, meta);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ApiApi#charge");
@@ -173,10 +203,11 @@ public class ApiApiExample {
         String mm = "mm_example"; // String | 2 digit month
         String yy = "yy_example"; // String | 2 digit year
         String cvv = "cvv_example"; // String | Card Verification Value found on the card (CVV2, CVC2, CID)
+        String zipcode = "zipcode_example"; // String | Zip code. *optional synonym: zip
         String ticket = "ticket_example"; // String | Ticket Number used by POS
         Object meta = null; // Object | Optional user defined object to be returned with future response
         try {
-            List<Response> result = apiInstance.credit(amount, cc, mm, yy, cvv, ticket, meta);
+            List<Response> result = apiInstance.credit(amount, cc, mm, yy, cvv, zipcode, ticket, meta);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ApiApi#credit");
@@ -207,7 +238,7 @@ public class ApiApiExample {
         String accountType = "accountType_example"; // String | 
         String accountNumber = "accountNumber_example"; // String | Bank Account to deposit transactions. 
         String routingNumber = "routingNumber_example"; // String | Bank Routing Number to deposit transactions.
-        List<String> ownershipType = Arrays.asList("ownershipType_example"); // List<String> | Select an ownership type:
+        String ownershipType = "ownershipType_example"; // String | [\"Sole Proprietor\", \"C-Corp Private\", \"C-Corp Public\", \"S-Corp Private\", \"S-Corp Public\", \"LLC Private\", \"LLC Public\", \"Not For Profit\", \"Partnership Private\", \"Partnership\", \"Government Agency\"]
         String businessDescription = "businessDescription_example"; // String | 
         String businessPhoneNumber = "businessPhoneNumber_example"; // String | 
         String businessAddress1 = "businessAddress1_example"; // String | 
@@ -250,11 +281,36 @@ public class ApiApiExample {
     public static void main(String[] args) {
         
         ApiApi apiInstance = new ApiApi();
-        String transactionId = "transactionId_example"; // String | Transaction ID of charged event.
+        String start = "start_example"; // String | Start of date range YYYY-MM-DD **defaults to that day
+        String end = "end_example"; // String | End of date range YYYY-MM-DD
+        String dates = "dates_example"; // String | Optional list of range, example: [\"YYYY-MM-DD\",\"YYYY-MM-DD\"]
+        try {
+            List<Response> result = apiInstance.report(start, end, dates);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ApiApi#report");
+            e.printStackTrace();
+        }
+    }
+}
+import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ApiApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ApiApiExample {
+
+    public static void main(String[] args) {
+        
+        ApiApi apiInstance = new ApiApi();
+        String id = "id_example"; // String | Transaction ID of charged event. *optional synonym: transactionId
         String ticket = "ticket_example"; // String | Ticket Number used by POS
         Object meta = null; // Object | Optional user defined object to be returned with future response
         try {
-            List<Response> result = apiInstance.settle(transactionId, ticket, meta);
+            List<Response> result = apiInstance.settle(id, ticket, meta);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ApiApi#settle");
@@ -296,11 +352,13 @@ All URIs are relative to *https://virtserver.swaggerhub.com/TriplePlayPay/paymen
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*ApiApi* | [**activate**](docs/ApiApi.md#activate) | **POST** /activate | Setup new Credit Card Terminal.
 *ApiApi* | [**authorize**](docs/ApiApi.md#authorize) | **POST** /authorize | Used to verify funds when the total amount of the purchase is unknown.
 *ApiApi* | [**callVoid**](docs/ApiApi.md#callVoid) | **POST** /void | A Void transaction can be used to back out a previous Sale transaction.
-*ApiApi* | [**charge**](docs/ApiApi.md#charge) | **POST** /charge | Charge a credit card or settle a previous charge.
+*ApiApi* | [**charge**](docs/ApiApi.md#charge) | **POST** /charge | Process payment or settle a previous charge. *card **bank
 *ApiApi* | [**credit**](docs/ApiApi.md#credit) | **POST** /credit | A Credit transaction is used to refund a cardholder for a previous transaction.
 *ApiApi* | [**enroll**](docs/ApiApi.md#enroll) | **POST** /enroll | Enroll a new merchant or retrieve status of pending merchant.
+*ApiApi* | [**report**](docs/ApiApi.md#report) | **GET** /report | Get transaction detail history
 *ApiApi* | [**settle**](docs/ApiApi.md#settle) | **POST** /settle | Alternative to sending a transactionId to charge, this method will settle an outstanding Authorization.
 *ApiApi* | [**tokenize**](docs/ApiApi.md#tokenize) | **POST** /tokenize | Create a token for later use.
 
