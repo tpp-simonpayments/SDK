@@ -4,13 +4,53 @@ All URIs are relative to *https://virtserver.swaggerhub.com/TriplePlayPay/paymen
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**Activate**](ApiApi.md#Activate) | **Post** /activate | Setup new Credit Card Terminal.
 [**Authorize**](ApiApi.md#Authorize) | **Post** /authorize | Used to verify funds when the total amount of the purchase is unknown.
-[**Charge**](ApiApi.md#Charge) | **Post** /charge | Charge a credit card or settle a previous charge.
+[**Charge**](ApiApi.md#Charge) | **Post** /charge | Process payment or settle a previous charge. *card **bank
 [**Credit**](ApiApi.md#Credit) | **Post** /credit | A Credit transaction is used to refund a cardholder for a previous transaction.
 [**Enroll**](ApiApi.md#Enroll) | **Post** /enroll | Enroll a new merchant or retrieve status of pending merchant.
+[**Report**](ApiApi.md#Report) | **Get** /report | Get transaction detail history
 [**Settle**](ApiApi.md#Settle) | **Post** /settle | Alternative to sending a transactionId to charge, this method will settle an outstanding Authorization.
 [**Tokenize**](ApiApi.md#Tokenize) | **Post** /tokenize | Create a token for later use.
 [**Void**](ApiApi.md#Void) | **Post** /void | A Void transaction can be used to back out a previous Sale transaction.
+
+# **Activate**
+> []Response Activate(ctx, activationCode, terminalId, optional)
+Setup new Credit Card Terminal.
+
+Setup new Credit Card Terminal.
+
+### Required Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+  **activationCode** | **string**| Activation Code on Terminal Screen | 
+  **terminalId** | **string**| Custom Name of Terminal | 
+ **optional** | ***ApiApiActivateOpts** | optional parameters | nil if no parameters
+
+### Optional Parameters
+Optional parameters are passed through a pointer to a ApiApiActivateOpts struct
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+ **meta** | [**optional.Interface of interface{}**](.md)| Optional user defined object to be returned with future response | 
+
+### Return type
+
+[**[]Response**](response.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **Authorize**
 > []Response Authorize(ctx, amount, cc, mm, yy, cvv, optional)
@@ -39,6 +79,7 @@ Name | Type | Description  | Notes
 
 
 
+ **zipcode** | **optional.String**| Zip code. *optional synonym: zip | 
  **ticket** | **optional.String**| Ticket Number used by POS | 
  **meta** | [**optional.Interface of interface{}**](.md)| Optional user defined object to be returned with future response | 
 
@@ -58,10 +99,10 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **Charge**
-> []Response Charge(ctx, amount, transactionId, cc, mm, yy, cvv, optional)
-Charge a credit card or settle a previous charge.
+> []Response Charge(ctx, amount, cc, mm, yy, cvv, accountNumber, routingNumber, type_, optional)
+Process payment or settle a previous charge. *card **bank
 
-Charge a credit card or settle a previous charge.
+Process payment or settle a previous charge. *card **bank
 
 ### Required Parameters
 
@@ -69,11 +110,13 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
   **amount** | **string**| The total transaction amount. This is the amount of funds to move on the card | 
-  **transactionId** | **string**| Transaction ID used to settle an authorized card (cc info then not required) | 
   **cc** | **string**| Credit Card Number with or without dashes | 
   **mm** | **string**| 2 digit month | 
   **yy** | **string**| 2 digit year | 
   **cvv** | **string**| Card Verification Value found on the card (CVV2, CVC2, CID) | 
+  **accountNumber** | **string**| Bank Account Number | 
+  **routingNumber** | **string**| Bank Routing Number | 
+  **type_** | **string**| Options: checking, savings *default checking | 
  **optional** | ***ApiApiChargeOpts** | optional parameters | nil if no parameters
 
 ### Optional Parameters
@@ -86,6 +129,10 @@ Name | Type | Description  | Notes
 
 
 
+
+
+ **id** | **optional.String**| Transaction ID used to settle an authorized payment method (cc or bank info then not required) *optional synonym: transactionId | 
+ **zipcode** | **optional.String**| Zip code. *optional synonym: zip | 
  **ticket** | **optional.String**| Ticket Number used by POS | 
  **meta** | [**optional.Interface of interface{}**](.md)| Optional user defined object to be returned with future response | 
 
@@ -131,6 +178,7 @@ Name | Type | Description  | Notes
 
 
 
+ **zipcode** | **optional.String**| Zip code. *optional synonym: zip | 
  **ticket** | **optional.String**| Ticket Number used by POS | 
  **meta** | [**optional.Interface of interface{}**](.md)| Optional user defined object to be returned with future response | 
 
@@ -170,7 +218,7 @@ Name | Type | Description  | Notes
   **accountType** | **string**|  | 
   **accountNumber** | **string**| Bank Account to deposit transactions.  | 
   **routingNumber** | **string**| Bank Routing Number to deposit transactions. | 
-  **ownershipType** | [**[]string**](string.md)| Select an ownership type: | 
+  **ownershipType** | **string**| [\&quot;Sole Proprietor\&quot;, \&quot;C-Corp Private\&quot;, \&quot;C-Corp Public\&quot;, \&quot;S-Corp Private\&quot;, \&quot;S-Corp Public\&quot;, \&quot;LLC Private\&quot;, \&quot;LLC Public\&quot;, \&quot;Not For Profit\&quot;, \&quot;Partnership Private\&quot;, \&quot;Partnership\&quot;, \&quot;Government Agency\&quot;] | 
   **businessDescription** | **string**|  | 
   **businessPhoneNumber** | **string**|  | 
   **businessAddress1** | **string**|  | 
@@ -243,8 +291,44 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **Report**
+> []Response Report(ctx, optional)
+Get transaction detail history
+
+Get transaction detail history
+
+### Required Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+ **optional** | ***ApiApiReportOpts** | optional parameters | nil if no parameters
+
+### Optional Parameters
+Optional parameters are passed through a pointer to a ApiApiReportOpts struct
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **start** | **optional.String**| Start of date range YYYY-MM-DD **defaults to that day | 
+ **end** | **optional.String**| End of date range YYYY-MM-DD | 
+ **dates** | **optional.String**| Optional list of range, example: [\&quot;YYYY-MM-DD\&quot;,\&quot;YYYY-MM-DD\&quot;] | 
+
+### Return type
+
+[**[]Response**](response.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **Settle**
-> []Response Settle(ctx, transactionId, optional)
+> []Response Settle(ctx, id, optional)
 Alternative to sending a transactionId to charge, this method will settle an outstanding Authorization.
 
 Alternative to sending a transactionId to charge, this method will settle an outstanding Authorization.
@@ -254,7 +338,7 @@ Alternative to sending a transactionId to charge, this method will settle an out
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-  **transactionId** | **string**| Transaction ID of charged event. | 
+  **id** | **string**| Transaction ID of charged event. *optional synonym: transactionId | 
  **optional** | ***ApiApiSettleOpts** | optional parameters | nil if no parameters
 
 ### Optional Parameters
@@ -312,7 +396,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **Void**
-> []Response Void(ctx, transactionId, optional)
+> []Response Void(ctx, id, optional)
 A Void transaction can be used to back out a previous Sale transaction.
 
 A Void transaction can be used to back out a previous Sale transaction.
@@ -322,7 +406,7 @@ A Void transaction can be used to back out a previous Sale transaction.
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-  **transactionId** | **string**| Transaction ID of charged event. | 
+  **id** | **string**| Transaction ID of charged event. *optional synonym: transactionId | 
  **optional** | ***ApiApiVoidOpts** | optional parameters | nil if no parameters
 
 ### Optional Parameters

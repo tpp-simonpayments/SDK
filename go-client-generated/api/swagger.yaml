@@ -7,7 +7,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.0
+  version: 1.0.1-oas3
 servers:
 - url: https://virtserver.swaggerhub.com/TriplePlayPay/payment/1.0.0
   description: SwaggerHub API Auto Mocking
@@ -23,8 +23,8 @@ paths:
     post:
       tags:
       - api
-      summary: Charge a credit card or settle a previous charge.
-      description: Charge a credit card or settle a previous charge.
+      summary: Process payment or settle a previous charge. *card **bank
+      description: Process payment or settle a previous charge. *card **bank
       operationId: charge
       parameters:
       - name: amount
@@ -36,11 +36,11 @@ paths:
         explode: true
         schema:
           type: string
-      - name: transactionId
+      - name: id
         in: query
-        description: Transaction ID used to settle an authorized card (cc info then
-          not required)
-        required: true
+        description: "Transaction ID used to settle an authorized payment method (cc\
+          \ or bank info then not required) *optional synonym: transactionId"
+        required: false
         style: form
         explode: true
         schema:
@@ -72,6 +72,38 @@ paths:
       - name: cvv
         in: query
         description: "Card Verification Value found on the card (CVV2, CVC2, CID)"
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: zipcode
+        in: query
+        description: "Zip code. *optional synonym: zip"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: accountNumber
+        in: query
+        description: Bank Account Number
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: routingNumber
+        in: query
+        description: Bank Routing Number
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: "Options: checking, savings *default checking"
         required: true
         style: form
         explode: true
@@ -156,6 +188,14 @@ paths:
         explode: true
         schema:
           type: string
+      - name: zipcode
+        in: query
+        description: "Zip code. *optional synonym: zip"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       - name: ticket
         in: query
         description: Ticket Number used by POS
@@ -196,9 +236,9 @@ paths:
         \ will settle an outstanding Authorization."
       operationId: settle
       parameters:
-      - name: transactionId
+      - name: id
         in: query
-        description: Transaction ID of charged event.
+        description: "Transaction ID of charged event. *optional synonym: transactionId"
         required: true
         style: form
         explode: true
@@ -285,6 +325,14 @@ paths:
         explode: true
         schema:
           type: string
+      - name: zipcode
+        in: query
+        description: "Zip code. *optional synonym: zip"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       - name: ticket
         in: query
         description: Ticket Number used by POS
@@ -323,9 +371,9 @@ paths:
       description: A Void transaction can be used to back out a previous Sale transaction.
       operationId: void
       parameters:
-      - name: transactionId
+      - name: id
         in: query
-        description: Transaction ID of charged event.
+        description: "Transaction ID of charged event. *optional synonym: transactionId"
         required: true
         style: form
         explode: true
@@ -415,6 +463,99 @@ paths:
           description: error in parameters
         "500":
           description: error in api call
+  /activate:
+    post:
+      tags:
+      - api
+      summary: Setup new Credit Card Terminal.
+      description: Setup new Credit Card Terminal.
+      operationId: activate
+      parameters:
+      - name: activationCode
+        in: query
+        description: Activation Code on Terminal Screen
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: terminalId
+        in: query
+        description: Custom Name of Terminal
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: meta
+        in: query
+        description: Optional user defined object to be returned with future response
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: object
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/response'
+                x-content-type: application/json
+        "400":
+          description: error in parameters
+        "500":
+          description: error in api call
+  /report:
+    get:
+      tags:
+      - api
+      summary: Get transaction detail history
+      description: Get transaction detail history
+      operationId: report
+      parameters:
+      - name: start
+        in: query
+        description: Start of date range YYYY-MM-DD **defaults to that day
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: End of date range YYYY-MM-DD
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: dates
+        in: query
+        description: "Optional list of range, example: [\"YYYY-MM-DD\",\"YYYY-MM-DD\"\
+          ]"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/response'
+                x-content-type: application/json
+        "400":
+          description: error in parameters
+        "500":
+          description: error in api call
   /enroll:
     post:
       tags:
@@ -434,6 +575,7 @@ paths:
           type: string
       - name: email
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -441,6 +583,7 @@ paths:
           type: string
       - name: website
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -448,6 +591,7 @@ paths:
           type: string
       - name: fed_tx_id
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -471,6 +615,7 @@ paths:
           type: string
       - name: account_holder_name
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -478,6 +623,7 @@ paths:
           type: string
       - name: account_type
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -501,6 +647,7 @@ paths:
           type: string
       - name: stock_symbol
         in: query
+        description: ""
         required: false
         style: form
         explode: true
@@ -508,29 +655,18 @@ paths:
           type: string
       - name: ownership_type
         in: query
-        description: 'Select an ownership type:'
+        description: "[\"Sole Proprietor\", \"C-Corp Private\", \"C-Corp Public\"\
+          , \"S-Corp Private\", \"S-Corp Public\", \"LLC Private\", \"LLC Public\"\
+          , \"Not For Profit\", \"Partnership Private\", \"Partnership\", \"Government\
+          \ Agency\"]"
         required: true
         style: form
         explode: true
         schema:
-          type: array
-          items:
-            type: string
-            default: Sole Proprietor
-            enum:
-            - Sole Proprietor
-            - C-Corp Private
-            - C-Corp Public
-            - S-Corp Private
-            - S-Corp Public
-            - LLC Private
-            - LLC Public
-            - Not For Profit
-            - Partnership Private
-            - Partnership
-            - Government Agency
+          type: string
       - name: business_description
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -538,6 +674,7 @@ paths:
           type: string
       - name: business_phone_number
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -545,6 +682,7 @@ paths:
           type: string
       - name: business_address_1
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -552,6 +690,7 @@ paths:
           type: string
       - name: business_address_2
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -559,6 +698,7 @@ paths:
           type: string
       - name: business_city
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -566,6 +706,7 @@ paths:
           type: string
       - name: business_state_province
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -573,6 +714,7 @@ paths:
           type: string
       - name: business_postal_code
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -605,6 +747,7 @@ paths:
           type: string
       - name: principle_date_of_birth
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -612,6 +755,7 @@ paths:
           type: string
       - name: principle_address_line_1
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -619,6 +763,7 @@ paths:
           type: string
       - name: principle_address_line_2
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -626,6 +771,7 @@ paths:
           type: string
       - name: principle_city
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -633,6 +779,7 @@ paths:
           type: string
       - name: principle_state_province
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -640,6 +787,7 @@ paths:
           type: string
       - name: principle_postal_code
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -647,6 +795,7 @@ paths:
           type: string
       - name: principle_title
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -654,6 +803,7 @@ paths:
           type: string
       - name: principle_ownership_percentage
         in: query
+        description: ""
         required: true
         style: form
         explode: true
@@ -661,6 +811,7 @@ paths:
           type: string
       - name: principle_phone_number
         in: query
+        description: ""
         required: true
         style: form
         explode: true
